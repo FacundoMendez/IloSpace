@@ -3,10 +3,9 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import nave from "../assets/nave.gltf"
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import planetTexture from "../assets/planetTexture.png"
 import planetglow from "../assets/glow.png"
-
+import earthCloud from "../assets/earthCloud22.png"
 
 
 const Scene = () => {
@@ -99,6 +98,7 @@ const Scene = () => {
         const textureLoader = new THREE.TextureLoader()
         const planetMap = textureLoader.load(planetTexture)
         const planetGlow = textureLoader.load(planetglow)
+        const earthCloud1 = textureLoader.load(earthCloud)
         
         
 
@@ -120,10 +120,31 @@ const Scene = () => {
         earthMesh.rotation.y = 4;
         groupPlanet.add(earthMesh);
         
-        // Crear la luz que creará el efecto de aureola
-        const auraLight = new THREE.PointLight(0xffffff, 1, 100);
-        auraLight.position.copy(earthMesh.position); // Establecer la posición de la luz en la misma posición que el planeta
-        scene.add(auraLight);
+ 
+
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 10.5);
+        directionalLight.position.set(20, 24 , -0);
+        groupPlanet.add(directionalLight);
+
+
+
+
+        const cloudMetarial = new THREE.MeshBasicMaterial({
+            map:earthCloud1,
+            transparent: true,
+            opacity: .6
+        });
+        
+
+        const cloudMesh = new THREE.Mesh(planetGeometry, cloudMetarial);
+        cloudMesh.scale.set(1.02, 1.02, 1.02 )
+        cloudMesh.position.set(22, 4 , -45);
+
+  
+        groupPlanet.add(cloudMesh);
+
+
         
 
         // Crear un material para la aureola que utilice la textura de glow
@@ -133,7 +154,7 @@ const Scene = () => {
             opacity: .9,
             transparent: true,
             blending: THREE.AdditiveBlending,
-            side: THREE.DoubleSide // Renderizar en la parte posterior de la geometría
+            side: THREE.DoubleSide 
         });
 
         // Crear una geometría de anillo para la aureola
@@ -141,13 +162,16 @@ const Scene = () => {
 
         // Crear un objeto de malla para la geometría de anillo y añadirlo a la escena
         const auraMesh = new THREE.Mesh(auraGeometry, auraMaterial);
-        auraLight.add(auraMesh);
-
+        groupPlanet.add(auraMesh);
+        auraMesh.position.set(22, 4 , -45);
+        
         // Rotar la geometría de anillo para que se ajuste a la posición del planeta
         auraMesh.rotation.x = -Math.PI / 2;
         auraMesh.rotation.y = earthMesh.rotation.y + 2;
 
         
+
+
         /* draco loader   NAVE*/
 
         const dracoLoader = new DRACOLoader()
@@ -280,6 +304,11 @@ const Scene = () => {
               canMoveFast = false;
               break;
           }
+
+           // Detener la nave espacial cuando no se presionan teclas de dirección
+          if (!moveForward && !moveBackward && !moveLeft && !moveRight) {
+            sceneNave.position.set(sceneNave.position.x, sceneNave.position.y, sceneNave.position.z);
+          }
         }
         
         window.addEventListener("keydown", handleKeyDown);
@@ -325,6 +354,8 @@ const Scene = () => {
             particle.rotation.z += 0.0002;
             earthMesh.rotation.z -= 0.001
             earthMesh.rotation.x -= 0.001
+            cloudMesh.rotation.z -= 0.0003
+            cloudMesh.rotation.y -= 0.0003
 
 
 
