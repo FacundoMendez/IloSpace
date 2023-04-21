@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
@@ -6,6 +6,7 @@ import nave from "../assets/nave.gltf"
 import planetTexture from "../assets/planetTexture.png"
 import planetglow from "../assets/glow.png"
 import earthCloud from "../assets/earthCloud22.png"
+import Controls from './Controls';
 
 
 const Scene = () => {
@@ -313,6 +314,49 @@ const Scene = () => {
         
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
+
+
+
+        if (window.innerWidth < 600) {
+          const topMov = document.querySelectorAll('.top');
+          const bottomMov = document.querySelectorAll('.bottom');
+          const leftMov = document.querySelectorAll('.left');
+          const rightMov = document.querySelectorAll('.right');
+        
+          // Agregar eventos táctiles para las direcciones de movimiento
+          topMov.forEach(btn => btn.addEventListener('touchstart', () => {
+            moveForward = true;
+          }));
+          topMov.forEach(btn => btn.addEventListener('touchend', () => {
+            moveForward = false;
+          }));
+        
+          bottomMov.forEach(btn => btn.addEventListener('touchstart', () => {
+            moveBackward = true;
+          }));
+          bottomMov.forEach(btn => btn.addEventListener('touchend', () => {
+            moveBackward = false;
+          }));
+        
+          leftMov.forEach(btn => btn.addEventListener('touchstart', () => {
+            moveLeft = true;
+          }));
+          leftMov.forEach(btn => btn.addEventListener('touchend', () => {
+            moveLeft = false;
+          }));
+        
+          rightMov.forEach(btn => btn.addEventListener('touchstart', () => {
+            moveRight = true;
+          }));
+          rightMov.forEach(btn => btn.addEventListener('touchend', () => {
+            moveRight = false;
+          }));
+        }
+
+
+
+
+
         
         const clock = new THREE.Clock()
         
@@ -387,8 +431,19 @@ const Scene = () => {
 
     },[])
 
+    const [ isMobile , setIsMobile] = useState(false)
+
+    const mobile = () => {
+      if(window.innerWidth < 600){
+        setIsMobile(!isMobile)
+      }
+    }
+
   return (
-    <canvas className='webGlScene'></canvas>
+    <>
+      <canvas className='webGlScene'></canvas>
+      {mobile  && <Controls/>}
+    </>
   )
 }
 

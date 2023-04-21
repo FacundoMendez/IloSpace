@@ -1,0 +1,56 @@
+.controls{
+    position: relative;
+    width: 16rem;
+    height: 17rem;
+    bottom: 23rem;
+    left: 3rem;
+    z-index: 999999999;
+    display: flex;
+    justify-content: center;
+}
+
+.top{
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.705);
+    border-radius: 10px;
+}
+
+
+.bottom{
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.705);
+    position: absolute;
+    bottom: 0;
+    border-radius: 10px;
+}
+
+.left{
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.705);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(0%, -50%);
+    border-radius: 10px;
+}
+
+
+.right{
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.705);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0%, -50%);
+    border-radius: 10px;
+}
+
+
+.top:active, .bottom:active, .left:active, .right:active{
+    filter: drop-shadow(0 0 10px white);
+    border: 2px solid white;
+}
