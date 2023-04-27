@@ -10,6 +10,7 @@ import Controls from './Controls';
 
 
 const Scene = () => {
+  const [ isMobile , setIsMobile] = useState(false)
 
     useEffect(() => {
 
@@ -19,6 +20,10 @@ const Scene = () => {
         // scene setup
         const scene = new THREE.Scene();
         
+
+
+           /* -----------------  camara ---------------- */
+
         
         const size = {
             width :  window.innerWidth,
@@ -37,8 +42,8 @@ const Scene = () => {
         })
     
     
-    
-        /*camera  */
+
+
     
         let camera;
     
@@ -54,7 +59,8 @@ const Scene = () => {
     
     
     
-        /* renderer */
+          /* -----------------  render  ---------------- */
+
     
     
         let renderer;
@@ -77,8 +83,8 @@ const Scene = () => {
     
     
     
-        /* lights */
-    
+           /* -----------------  lights ---------------- */
+
         function setLights(){
             const ambientLight = new THREE.AmbientLight(0xffffff ,.7)
             scene.add(ambientLight);
@@ -94,8 +100,8 @@ const Scene = () => {
         controls.enableDamping = true */
 
 
+             /* -----------------  textures ---------------- */
 
-            /* textures */
         const textureLoader = new THREE.TextureLoader()
         const planetMap = textureLoader.load(planetTexture)
         const planetGlow = textureLoader.load(planetglow)
@@ -104,7 +110,8 @@ const Scene = () => {
         
 
 
-        // earth 
+          /* -----------------  earth ---------------- */
+
 
 
         const planetGeometry = new THREE.SphereGeometry(10, 32, 32);
@@ -121,14 +128,16 @@ const Scene = () => {
         earthMesh.rotation.y = 4;
         groupPlanet.add(earthMesh);
         
- 
-
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 10.5);
         directionalLight.position.set(20, 24 , -0);
         groupPlanet.add(directionalLight);
 
 
+
+
+
+             /* -----------------  cloud---------------- */
 
 
         const cloudMetarial = new THREE.MeshBasicMaterial({
@@ -147,6 +156,9 @@ const Scene = () => {
 
 
         
+
+             /* -----------------  aura ---------------- */
+
 
         // Crear un material para la aureola que utilice la textura de glow
         const auraMaterial = new THREE.MeshBasicMaterial({
@@ -170,9 +182,12 @@ const Scene = () => {
         auraMesh.rotation.x = -Math.PI / 2;
         auraMesh.rotation.y = earthMesh.rotation.y + 2;
 
-        
 
 
+
+             /* -----------------  cargar modelo nave ---------------- */
+
+             
         /* draco loader   NAVE*/
 
         const dracoLoader = new DRACOLoader()
@@ -182,8 +197,6 @@ const Scene = () => {
 
 
 
-
-        /* scene gltf */
         let sceneNave
         let objectRenderOrder
 
@@ -196,12 +209,6 @@ const Scene = () => {
                 sceneNave.position.set(0,-10,30)
                 sceneNave.rotation.x = .25
                 sceneNave.scale.set(1,1,1)
-        
-                // Obtener el valor de renderOrder de tu objeto
-                 objectRenderOrder = sceneNave.renderOrder
-        
-                // Establecer el valor de renderOrder de tus partículas
-                particlesMaterial.renderOrder = objectRenderOrder - 1
             }
         )
 
@@ -209,8 +216,11 @@ const Scene = () => {
 
 
 
+          /* -----------------  stars  ---------------- */
 
-        // Stars 
+
+
+
         const starsGeometry = new THREE.BufferGeometry()
         const count = 5000
                 
@@ -250,6 +260,8 @@ const Scene = () => {
         scene.add(particle)
 
 
+      
+          /* -----------------  movimiento con las teclas  ---------------- */
 
 
 
@@ -317,7 +329,14 @@ const Scene = () => {
 
 
 
+
+          /* -----------------  movimiento con mobile  ---------------- */
+
+
+
         if (window.innerWidth < 600) {
+          setIsMobile(!isMobile)
+
           const topMov = document.querySelectorAll('.top');
           const bottomMov = document.querySelectorAll('.bottom');
           const leftMov = document.querySelectorAll('.left');
@@ -402,8 +421,6 @@ const Scene = () => {
             cloudMesh.rotation.y -= 0.0003
 
 
-
-            
             // Obtener el atributo de color de la geometría y actualizarlo en función del tiempo
             const colors = starsGeometry.attributes.color
             for(let i = 0; i < colors.count; i++) {
@@ -416,8 +433,6 @@ const Scene = () => {
             colors.needsUpdate = true // Indicar a three.js que los colores de la geometría han cambiado
             
 
-
-       
             renderer.render(scene,camera)
             window.requestAnimationFrame(animate)
             renderer.autoClear = true
@@ -427,22 +442,18 @@ const Scene = () => {
         animate()
         
         renderer.render(scene,camera)
-            
+
 
     },[])
 
-    const [ isMobile , setIsMobile] = useState(false)
 
-    const mobile = () => {
-      if(window.innerWidth < 600){
-        setIsMobile(!isMobile)
-      }
-    }
+  
+
 
   return (
     <>
       <canvas className='webGlScene'></canvas>
-      {mobile  && <Controls/>}
+      {isMobile  && <Controls/>}
     </>
   )
 }
